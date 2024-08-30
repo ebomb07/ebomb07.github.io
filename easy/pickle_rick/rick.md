@@ -1,7 +1,8 @@
-# Optional but useful:
+# RICK WRITEUP
+## Optional but useful:
 When starting the machine, I got the IP and put it in hosts. To make it more efficient at getting to the site. IP: 10.10.108.239; host: rick.thm.
 
-# Reconnaissance 
+## Reconnaissance 
 An important step in web enumeration is to get the nmap scan.
 
 ![namp_scan](assets/nmap_scan.png)
@@ -15,7 +16,7 @@ After going to the website, we see this
 
 We now know our goal, which is to find the last three secret ingredients to change Rick back into a person.
 
-# Enumeration
+## Enumeration
 
 After digging deeper, you can see in the inspect element the username.
 
@@ -82,6 +83,6 @@ Most likely, the final ingredient would be in the root directory. When trying to
 
 We now need to run the less command to see the file: `sudo less root/3rd.txt`. It works! The third and final ingredient was found, and Rick is now back to a normal person.
 
-# Conclusion
+## Conclusion
 
 At the beginning, using nmap to see the open ports and using gobuster to find the directories. We were able to gain access to the login page. Using the command panel to get the first ingredient, then using a PHP reverse shell to gain access to the machine. Finding the second ingredient in `/home/rick/`. Finally, finding the last indgredient in `/root/3rd.txt` using sudo to gain permission.
