@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="../../../img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>ROOT_ME WRITEUP - Ebomb-writeups</title>
+    <link href="../../../css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="../../../css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="../../../css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="../../../js/jquery-3.2.1.min.js"></script>
+    <script src="../../../js/bootstrap-3.3.7.min.js"></script>
+    <script src="../../../js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '../../..';
+      var is_top_frame = false;
+        
+        var pageToc = [
+          {title: "ROOT_ME WRITEUP", url: "#_top", children: [
+              {title: "Optional but useful:", url: "#optional-but-useful" },
+              {title: "Recon:", url: "#recon" },
+              {title: "Enumeration", url: "#enumeration" },
+              {title: "Conclusion", url: "#conclusion" },
+          ]},
+        ];
+
+    </script>
+    <script src="../../../js/base.js"></script>
+      <script src="../../../search/main.js"></script> 
+</head>
+
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
+
+
+
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
+
+    
+
+    <h1 id="root_me-writeup">ROOT_ME WRITEUP</h1>
+<p>[9/1/24]</p>
+<p>Time: 1 hour 10 minutes</p>
+<h2 id="optional-but-useful">Optional but useful:</h2>
+<p>When starting the machine, I got the IP and put it in hosts. To make it more efficient at getting to the site. IP: 10.10.126.233; host: root.thm.</p>
+<h2 id="recon">Recon:</h2>
+<p>Starting this machine, I ran an nmap scan to see the open ports.</p>
+<p><img alt="nmap_scan" src="../assets/nmap_scan.png" /></p>
+<p>With the nmap scan, we can see the http port open, and we can run a directory scan. Using the gobuster tool, this is the result.</p>
+<p><img alt="gobuster_scan" src="../assets/gobuster_scan.png" /></p>
+<h2 id="enumeration">Enumeration</h2>
+<p>When going to the site, we see this:</p>
+<p><img alt="home" src="../assets/home.png" /></p>
+<p>However, we see that there is a /panel directory. It looks like we can upload a file to the site. Which means that we might be able to get a reverse shell onto the server. A good reverse shell is created by pentestmonkey.</p>
+<p>The reverse shell is created in PHP. Although the most important part of the file is changing the IP and port.</p>
+<p><img alt="reverse_shell" src="../assets/reverse_shell.png" /></p>
+<p>Although there is at least one filter on this site not allowing .php files.</p>
+<p><img alt="php_fail" src="../assets/php_fail.png" /></p>
+<p>For some reason it is in Portuguese.</p>
+<p>However, .php is one of the PHP-type files. Others include: .php5, .php2, .phtml. There are others, but these might work.</p>
+<p>Perfect, the .php5 extension works, and now the file is in the system.</p>
+<p><img alt="php_success" src="../assets/php_success.png" /></p>
+<p>Looking back on the Gobuster scan, we see a /uploads/ directory. When going to that directory, we see the .php5 file. Before clicking the file, make sure that your Netcat is listening to the port. Payload: <code>nc -lvnp [port number]</code> If the netcat worked and the file is going to the right IP and port, it will give you access.</p>
+<p><img alt="shell" src="../assets/shell.png" /></p>
+<p>When running whoami, you will see that you are <code>www-data</code>.</p>
+<p>When looking around and going to the /var/www/ directory, you will find user.txt with a flag.</p>
+<p><img alt="flag1" src="../assets/flag_1.png" /></p>
+<p>For the next challenge, we need to find a weird file with SUID permission. After looking at the man page and different types of payloads, the one found was.</p>
+<p><code>find / -type f -user root -perm /4000 2&gt;/dev/null</code></p>
+<p><code>-type f</code>: looking for only files</p>
+<p><code>-user</code>: looking for users</p>
+<p><code>-perm</code>: with specific permission number</p>
+<p><code>2&gt;/dev/null</code>: sends failed outputs to that file extension.</p>
+<p>After running that payload, there were a lot fewer results, and we know that we are looking for a /<strong><em> / *** / </em></strong>*** file, and by trying the ones that fit the case, you will find the answer. Now we need to gain root access. However, we don't have access to the sudo command, so we can't look into the root directory.</p>
+<p>However, there was a hint on the tryhackme room page saying find gtfobins. After looking around, gtfobins looks like it is a type of privilege escalation due to different execution file types, like Python. When running the command below, you will gain root privileges. Then, if you go to /root and cat the file, you will get the final key.</p>
+<p><img alt="root_access" src="../assets/root_access.png" /></p>
+<h2 id="conclusion">Conclusion</h2>
+<p>After running the Gobuster scan, seeing /uploads and /panel allowed us to reverse shell into the system. When going to /var/www, you will find the first flag. Then, when finding files that are given SUID permissions, like the one needed, it allowed for privilege escalation to root and getting the last flag.</p>
+<h3 id="reference">Reference:</h3>
+<pre><code>-gtfobins: 
+    https://gtfobins.github.io/ 
+    (privilege escalation)
+
+-lightkunyagami: 
+    https://beginninghacking.net/2020/09/09/try-hack-me-rootme/ 
+    (using 2&gt;/dev/null at the end of the find command)
+</code></pre>
+
+  <br>
+    
+
+    <br>
+</div>
+
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="None">Windmill Dark</a> theme by None (noraj).</p>
+</footer>
+
+</body>
+</html>
