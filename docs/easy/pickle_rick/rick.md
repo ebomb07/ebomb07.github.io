@@ -1,4 +1,6 @@
 # RICK WRITEUP
+[08/29/2024]
+
 ## Optional but useful:
 When starting the machine, I got the IP and put it in hosts. To make it more efficient at getting to the site. IP: 10.10.108.239; host: rick.thm.
 
