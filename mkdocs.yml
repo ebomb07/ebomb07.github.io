@@ -1,12 +1,12 @@
-site_name: Ethan Carter Security Writeups
+site_name: Ebomb07 Security Writeups
 site_description: CTF challenges, exploit development, and security research writeups
-site_author: Your Name
-site_url: https://example.com/
+site_author: Ebomb07
+site_url: https://ebomb07.github.io
 
-repo_name: yourusername/writeups
-repo_url: https://github.com/yourusername/writeups
+repo_name: ebomb07/ebomb07.github.io
+repo_url: https://github.com/ebomb07/ebomb07.github.io/tree/main/docs/easy
 
-copyright: Copyright &copy; 2026 Your Name
+copyright: Copyright &copy; 2026 Ebomb07
 
 theme:
   name: material
