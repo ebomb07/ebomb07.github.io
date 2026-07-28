@@ -4,7 +4,7 @@ mkdocs build
 
 git add *
 git commit -m "new writeup"
-git push main
+git push origin main
 
 cd site
 git init
