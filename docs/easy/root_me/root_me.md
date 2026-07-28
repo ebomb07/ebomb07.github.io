@@ -1,5 +1,5 @@
 # ROOT_ME WRITEUP
-[9/1/24]
+9/1/24
 
 ## Optional but useful:
 When starting the machine, I got the IP and put it in hosts. To make it more efficient at getting to the site. IP: 10.10.126.233; host: root.thm.
