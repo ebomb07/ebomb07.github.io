@@ -11,7 +11,7 @@ git init
 git add *
 git commit -m "new writeup for site"
 git remote add origin ebomb07/ebomb07.github.io
-git push master
+git push origin master
 
 
 
